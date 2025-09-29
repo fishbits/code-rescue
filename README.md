@@ -11,11 +11,23 @@ When your course ends, you may lose access to the UWC2-PYTHON organization and a
 ## Prerequisites
 
 1. **Python 3.7 or higher** installed on your computer
-2. **A GitHub Personal Access Token** with the following scopes:
-   - `repo` (Full control of private repositories)
-   - `read:org` (Read organization membership)
+2. **GitHub CLI** (required for SSO authentication): https://docs.github.com/en/github-cli/github-cli/quickstart
+3. Optional: **A GitHub Personal Access Token** as backup (requires manual SSO authorization)
 
-### Creating a GitHub Personal Access Token
+### Installing GitHub CLI
+
+**Why GitHub CLI is needed:** The UWC2-PYTHON organization uses SAML SSO, which GitHub CLI handles automatically. Manual tokens require additional SSO authorization steps that can be tricky.
+
+**Installation:**
+- **macOS**: `brew install gh`
+- **Windows**: Download from https://github.com/cli/cli/releases
+- **Linux**: See https://github.com/cli/cli/blob/trunk/docs/install_linux.md
+
+### Creating a GitHub Personal Access Token (Optional)
+
+**Note:** GitHub CLI is recommended instead of manual tokens for SSO organizations.
+
+If you need to create a manual token:
 
 1. Go to https://github.com/settings/tokens
 2. Click "Generate new token (classic)"
@@ -46,7 +58,9 @@ When your course ends, you may lose access to the UWC2-PYTHON organization and a
 
 ## How to use
 
-### Option 1: GitHub CLI with SSO (Recommended)
+### Recommended: GitHub CLI with SSO
+
+This is the easiest method for SSO organizations like UWC2-PYTHON:
 
 1. **Run the tool**:
    ```bash
@@ -59,7 +73,9 @@ When your course ends, you may lose access to the UWC2-PYTHON organization and a
 
 4. **Authorize SSO access** - the tool will guide you through this process if needed
 
-### Option 2: Manual Token Entry
+### Alternative: Manual Token Entry (Advanced)
+
+**Warning:** Manual tokens with SSO can be tricky - GitHub CLI is recommended.
 
 1. **Create a Personal Access Token** (see instructions above)
 
@@ -110,10 +126,15 @@ Original repository: `UWC2-PYTHON/320-sp25-assignment-08-yourusername`
 - Try forking manually through the GitHub web interface
 
 ### "Cannot access repository via API" but I can see it on the web
-- This is due to GitHub's SSO restrictions on API access
-- **Solution**: Use GitHub CLI authentication (Option 1) instead of manual tokens
-- If you must use manual tokens, make sure to authorize SSO at https://github.com/orgs/UWC2-PYTHON/sso
+- This is due to GitHub's SAML SSO restrictions on API access
+- **Solution**: Use GitHub CLI authentication (recommended) - it handles SSO automatically
+- **Alternative**: If using manual tokens, authorize SSO at https://github.com/orgs/UWC2-PYTHON/sso
 - The tool will provide manual rescue instructions as a fallback
+
+### "GitHub CLI not found" or "gh command not found"
+- Install GitHub CLI from https://docs.github.com/en/github-cli/github-cli/quickstart
+- Make sure it's in your system PATH
+- Restart your terminal after installation
 
 ### "SSO authorization still needed"
 - Go to https://github.com/orgs/UWC2-PYTHON/sso
