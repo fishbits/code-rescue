@@ -145,7 +145,7 @@ Original repository: `UWC2-PYTHON/320-sp25-assignment-08-yourusername`
 ## Important Notes
 
 - **This tool is safe** - it only creates forks, it doesn't delete or modify anything
-- **Repository names get a prefix** - all rescued repos will be named `rescued-original-name`
+- **Repository names get a prefix** - all rescued repos will be named either the same or prefixed with your chose option (i.e. `rescued-original-name`)
 - **Private repositories stay private** - your rescued repositories will have the same visibility as the originals
 - **Run this before you lose access** - the tool needs your current organization access to work
 
@@ -165,6 +165,6 @@ If you run into issues:
 
 ---
 
-**Created by Eric Fish (fishbits) for UWC2-PYTHON students** 🐍
+**Created by Eric Fisher for UWC2-PYTHON students** 🐍
 
-Remember: Better safe than sorry - rescue your code before it's too late!
+Remember: Better safe than sorry - fork your code before it's too late!
