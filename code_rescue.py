@@ -231,16 +231,18 @@ def discover_repositories(g: Github) -> tuple[List, List, List]:
     # (only in actual personal repos)
     # Note: This excludes UWC2-PYTHON org repos where you're a collaborator
     rescued_repos = []
-    uwc_patterns = ['uwc2', 'UWC2', '320-sp25', '310-sp25', '330-su25',
-                    'lesson-', 'assignment-', 'rescued-']
+    # Common patterns for course repositories - focus on course numbers
+    course_patterns = ['uwc2', 'UWC2', '310-', '320-', '330-',
+                       'lesson-', 'assignment-', 'exercise-', 'lab-',
+                       'rescued-', 'class-', 'course-']
 
     for repo in personal_repos:
-        for pattern in uwc_patterns:
+        for pattern in course_patterns:
             if pattern.lower() in repo.name.lower():
                 rescued_repos.append(repo)
                 break
 
-    print(f"🔍 Found {len(rescued_repos)} potentially rescued UWC2-PYTHON "
+    print(f"🔍 Found {len(rescued_repos)} potentially rescued course "
           "repos in personal account")
 
     return personal_repos, api_accessible_repos, rescued_repos
@@ -334,37 +336,6 @@ def filter_repositories_for_rescue(rescued_repos: List,
                     print(f"   ✅ {repo_name} - needs rescue "
                           "(not found in org repos, checking personal)")
                     repos_to_rescue.append(repo_name)
-
-    return repos_to_rescue
-
-    repos_to_rescue = []
-
-    if manual_repos:
-        print(f"🔍 Analyzing {len(manual_repos)} repositories:")
-        for repo_name in manual_repos:
-            # More precise matching - look for exact matches or rescued- prefix
-            already_rescued = False
-
-            for rescued in rescued_repos:
-                # Exact match
-                if repo_name.lower() == rescued.name.lower():
-                    already_rescued = True
-                    print(f"   ⏭️  {repo_name} - exact match with "
-                          f"{rescued.name}")
-                    print(f"        (created: {rescued.created_at}, "
-                          f"fork: {rescued.fork})")
-                    break
-                # Rescued with prefix
-                elif rescued.name.lower() == f"rescued-{repo_name.lower()}":
-                    already_rescued = True
-                    print(f"   ⏭️  {repo_name} - found as {rescued.name}")
-                    print(f"        (created: {rescued.created_at}, "
-                          f"fork: {rescued.fork})")
-                    break
-
-            if not already_rescued:
-                print(f"   ✅ {repo_name} - needs rescue")
-                repos_to_rescue.append(repo_name)
 
     return repos_to_rescue
 
@@ -505,7 +476,11 @@ def rescue_repositories(g: Github, repos_to_rescue: List[str],
     if successful_forks:
         print("\n🎉 Successfully rescued repositories:")
         for repo in successful_forks:
-            print(f"   - uw-{repo}")
+            if name_prefix:
+                display_name = f"{name_prefix}{repo}"
+            else:
+                display_name = repo
+            print(f"   - {display_name}")
 
     if failed_forks:
         print("\n⚠️  Failed to rescue:")
@@ -522,7 +497,11 @@ def rescue_repositories(g: Github, repos_to_rescue: List[str],
             print(f"   1. Visit: https://github.com/UWC2-PYTHON/{repo}")
             print("   2. Click the 'Fork' button (top right)")
             print("   3. Choose your personal account as the destination")
-            print(f"   4. Optionally rename it to 'rescued-{repo}'")
+            if name_prefix:
+                suggested_name = f"{name_prefix}{repo}"
+                print(f"   4. Optionally rename it to '{suggested_name}'")
+            else:
+                print("   4. Keep the original name or rename as desired")
             print()
 
         print("💡 These manual forks will preserve your code just as")
@@ -578,13 +557,20 @@ def main():
         student_repos = []
         for repo in api_accessible_repos:
             # Skip obvious template/resource repositories
-            if repo.name in ['310-Resources', '.github', 'accessTestRepo']:
+            skip_patterns = ['Resources', '.github', 'accessTestRepo',
+                             'README', 'template', 'base-', 'TEMPLATE']
+            should_skip = any(pattern.lower() in repo.name.lower()
+                              for pattern in skip_patterns)
+            
+            if should_skip:
                 continue
+                
             # Include repositories with username or common patterns
             has_username = username.lower() in repo.name.lower()
             has_pattern = any(pattern in repo.name.lower()
                               for pattern in ['lesson-', 'assignment-',
-                                              '-sp25-', '-su25-'])
+                                              'exercise-', 'lab-', '310-',
+                                              '320-', '330-'])
             if has_username or has_pattern:
                 student_repos.append(repo.name)
 
