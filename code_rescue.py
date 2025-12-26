@@ -340,7 +340,7 @@ def filter_repositories_for_rescue(rescued_repos: List,
     return repos_to_rescue
 
 
-def get_fork_destination_options() -> tuple[str, str]:
+def get_fork_destination_options() -> tuple[str, str, str]:
     """Get user preferences for fork destination and naming."""
     print("\n🎯 Fork Destination Options")
     print("=" * 40)
@@ -561,10 +561,10 @@ def main():
                              'README', 'template', 'base-', 'TEMPLATE']
             should_skip = any(pattern.lower() in repo.name.lower()
                               for pattern in skip_patterns)
-            
+
             if should_skip:
                 continue
-                
+
             # Include repositories with username or common patterns
             has_username = username.lower() in repo.name.lower()
             has_pattern = any(pattern in repo.name.lower()
